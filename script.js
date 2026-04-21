@@ -20,7 +20,8 @@ function goTo(id) {
     c.style.opacity = '';
     n.scrollTop = 0;
     n.classList.add('active');
-    onEnter(id);
+    n.style.pointerEvents = '';  // always reset – prevents freeze on replay
+    try { onEnter(id); } catch(e) { console.error('onEnter error:', e); }
     setTimeout(() => { busy = false; cur = id; }, 80);
   }, 1000);
 }
@@ -236,9 +237,17 @@ function stopConfetti() {
     audio.volume = 0;
     audio.play()
       .then(() => { fadeTo(audio, 0.65, 2000); setPlaying(true); })
-      .catch(() => setPlaying(false));
+      .catch(() => {
+        // Autoplay blocked by browser – reset so gesture fallback works
+        started = false;
+        setPlaying(false);
+      });
   }
 
+  // Attempt autoplay immediately (works in most browsers after page interaction)
+  startAudio();
+
+  // Fallback: play on first user gesture if autoplay was blocked
   ['click','keydown','touchstart'].forEach(e =>
     document.addEventListener(e, startAudio, { once: true })
   );
