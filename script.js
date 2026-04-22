@@ -263,8 +263,8 @@ function stopConfetti() {
   /* ── Stop any ending track, safely resume BGM ── */
   window.stopEndingMusic = function() {
     if (!activeEnd) return;
-    
-    // Hide content & stopped Sky Video if active
+
+    // Hide content & Sky Video if active
     const sky = document.getElementById('good-sky-bg');
     if (sky) {
       sky.classList.remove('active');
@@ -275,12 +275,21 @@ function stopConfetti() {
 
     const ea = endAudio(activeEnd);
     activeEnd = null;
-    if (ea) fadeTo(ea, 0, 800, () => { ea.pause(); ea.currentTime = 0; });
-    if (started) {
+
+    function resumeBGM() {
+      if (!started) return;
       audio.volume = 0;
       audio.play()
         .then(() => { fadeTo(audio, 0.65, 1500); setPlaying(true); })
         .catch(() => {});
+    }
+
+    if (ea) {
+      // Immediately stop the ending track to avoid it leaking into next playthrough,
+      // then resume BGM once the fade completes (prevents shared-fadeTimer race condition).
+      fadeTo(ea, 0, 800, () => { ea.pause(); ea.currentTime = 0; resumeBGM(); });
+    } else {
+      resumeBGM();
     }
   };
   window.stopGoodEndingMusic = window.stopEndingMusic; // backward compat

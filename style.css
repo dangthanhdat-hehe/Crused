@@ -120,7 +120,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: 9998; pointer-eve
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 200 }
 
 /* ─── SCENE BACKGROUNDS ─────────────────────────── */
-#s-intro  { background: radial-gradient(ellipse at 50% 60%,#0e0207 0%,#040103 100%) }
+#s-intro  { background: radial-gradient(ellipse at 50% 60%,#0e0207 0%,#040103 100%); position: relative; overflow: hidden; }
 #s-back   { background: linear-gradient(160deg,#060209 0%,#0b0413 50%,#070310 100%) }
 #s-disc1  { background: linear-gradient(140deg,#060002 0%,#0d0005 50%,#060002 100%) }
 #s-disc2  { background: linear-gradient(160deg,#040308 0%,#080615 50%,#040308 100%) }
@@ -133,6 +133,48 @@ body::after { content: ''; position: fixed; inset: 0; z-index: 9998; pointer-eve
 #s-g1,#s-g2 { background: linear-gradient(135deg,#030408 0%,#060a14 50%,#030408 100%) }
 #s-g3,#s-g4 { background: linear-gradient(135deg,#040806 0%,#080e0a 50%,#040806 100%) }
 #s-gend   { background: radial-gradient(ellipse at 50% 40%,#050e12 0%,#010508 100%) }
+
+/* ─── INTRO FLICKER BACKGROUND ──────────────────── */
+#intro-bg-flicker {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  pointer-events: none;
+  will-change: opacity;
+  animation: introFlicker 6s ease-in-out infinite;
+}
+@keyframes introFlicker {
+  0%   { opacity: 0; }
+  8%   { opacity: 0.72; }
+  14%  { opacity: 0.55; }
+  16%  { opacity: 0.72; }
+  22%  { opacity: 0.68; }
+  28%  { opacity: 0; }
+  42%  { opacity: 0; }
+  48%  { opacity: 0.62; }
+  52%  { opacity: 0.78; }
+  54%  { opacity: 0.50; }
+  56%  { opacity: 0.80; }
+  64%  { opacity: 0; }
+  78%  { opacity: 0; }
+  84%  { opacity: 0.65; }
+  88%  { opacity: 0.40; }
+  90%  { opacity: 0.68; }
+  96%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+/* Overlay tối phủ lên ảnh để đảm bảo chữ vẫn đọc được */
+#intro-bg-flicker-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse at 50% 60%, rgba(4,1,3,0.45) 0%, rgba(4,1,3,0.78) 100%);
+  pointer-events: none;
+}
 
 /* ════════════════════════════════════════════════════
    ILLUSTRATION COMPONENTS
@@ -553,7 +595,7 @@ body.glitch-lv5 #glitch-vfx::after  { display:block; height:1px; background:rgba
    GOOD ENDING SKY · Video Background
 ═══════════════════════════════════════════════════ */
 #good-sky-bg {
-  position: absolute; inset: 0; z-index: 0;
+  position: fixed; inset: 0; z-index: 0;
   width: 100%; height: 100%; object-fit: cover;
   opacity: 0; pointer-events: none;
   transition: opacity 3s cubic-bezier(0.4, 0, 0.2, 1);
